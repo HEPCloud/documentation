@@ -1,0 +1,34 @@
+@startuml
+skinparam shadowing false
+skinparam DefaultFontName helvetica
+skinparam DefaultFontSize 18
+skinparam ActivityBackgroundColor #82CE5A
+skinparam ActivityBorderColor green
+skinparam SequenceArrowColor blue
+
+start
+fork
+  :shortlisted
+  resources;
+fork again
+  :price
+  performance
+  metric;
+fork again
+  :resources
+  costing;
+fork again
+  :resources
+  occupancy &
+  monitoring;
+end fork
+
+:**DECISION:**
+Filter resources based on the figure of
+merit (fom), price-perf and occupancy;
+
+:**PUBLISH:**
+Filtered resources based on fom;
+
+stop
+@enduml

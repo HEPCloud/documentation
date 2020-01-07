@@ -1,0 +1,158 @@
+@startuml
+skinparam shadowing false
+
+start
+fork
+
+  partition Job_Clustering {
+    :Source_HTCondor_Queue;
+    :Decider_Job_Cluster;
+    fork
+      :Publisher_Clusters;
+    fork again
+      :Publisher_Monitoring;
+    end fork
+  }
+
+fork again
+
+  partition AWS_Price_Performance {
+
+    fork
+      :Source_Performance_Info;
+    fork again
+      :Source_AWS_Resources;
+    fork again
+      :Source_AWS_Current_SPOT_Prices;
+    fork again
+      :Source_Resource_Limits;
+    fork again
+      :Source_AWS_Desired_Bid;
+    end fork
+
+    :Decider_AWS_Figure_Of_Merit;
+    :Decisder_AWS_Price_Performance;
+
+    fork
+      :Publisher_AWS_Figure_Of_Merit;
+    fork again
+      :Publisher_AWS_Price_Performance;
+    fork again
+      :Publisher_Monitoring;
+    end fork
+  }
+
+fork again
+
+  partition Google_Price_Performance {
+
+    fork
+      :Source_Performance_Info;
+    fork again
+      :Source_Google_Resources;
+    fork again
+      :Source_Resource_Limits;
+    fork again
+      :Source_Google_Price;
+    end fork
+
+    :Decider_Google_Figure_Of_Merit;
+    :Decisder_Google_Price_Performance;
+
+    fork
+      :Publisher_Google_Figure_Of_Merit;
+    fork again
+      :Publisher_Google_Price_Performance;
+    fork again
+      :Publisher_Monitoring;
+    end fork
+  }
+
+fork again
+
+  partition NERSC_Price_Performance {
+
+    fork
+      :Source_Performance_Info;
+    fork again
+      :Source_NERSC_Resources;
+    fork again
+      :Source_Resource_Limits;
+    fork again
+      :Source_NERSC_Price;
+    end fork
+
+    :Decider_NERSC_Figure_Of_Merit;
+    :Decisder_NERSC_Price_Performance;
+
+    fork
+      :Publisher_NERSC_Figure_Of_Merit;
+    fork again
+      :Publisher_NERSC_Price_Performance;
+    fork again
+      :Publisher_Monitoring;
+    end fork
+  }
+
+fork again
+
+  partition OSG_Price_Performance {
+
+    fork
+      :Source_Performance_Info;
+    fork again
+      :Source_OSG_Resources;
+    fork again
+      :Source_Resource_Limits;
+    fork again
+      :Source_OSG_Price;
+    end fork
+
+    :Decider_OSG_Figure_Of_Merit;
+    :Decisder_OSG_Price_Performance;
+
+    fork
+      :Publisher_OSG_Figure_Of_Merit;
+    fork again
+      :Publisher_OSG_Price_Performance;
+    fork again
+      :Publisher_Monitoring;
+    end fork
+  }
+
+end fork
+
+partition Resource_Request {
+
+  fork
+    :Source_AWS_Desired_Bid;
+  fork again
+    :Source_AWS_Figure_Of_Merit;
+  fork again
+    :Source_Google_Figure_Of_Merit;
+  fork again
+    :Source_NERSC_Figure_Of_Merit;
+  fork again
+    :Source_OSG_Figure_Of_Merit;
+  fork again
+    :Source_Resource_Limits;
+  fork again
+    :Source_AWS_On_Demand_Services_Status;
+  fork again
+    :Source_Google_On_Demand_Services_Status;
+  fork again
+    :Source_NERSC_On_Demand_Services_Status;
+  end fork
+
+  :Decider_Resource_Requests;
+
+  fork
+    :Publisher_Resource_Requests;
+  fork again
+    :Publisher_Monitoring;
+  end fork
+}
+
+stop
+
+@enduml

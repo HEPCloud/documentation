@@ -1,0 +1,36 @@
+@startuml
+skinparam shadowing false
+
+state Init {
+    Init : init()
+    Init : consumes()
+}
+
+state Failed {
+}
+
+state Shutdown {
+
+}
+
+state Wait {
+    Wait : Entry: acquire()
+}
+
+state Problem {
+}
+
+[*] --> Init : New
+Init --> Failed : Fatal Error
+Init --> Wait : Ready -> Schedule
+Wait --> Wait : Schedule -> Reschedule
+Wait --> Problem : Transient Error
+Wait --> Shutdown : Shutdown
+Problem --> Wait : Schedule
+Problem --> Shutdown : Shutdown
+
+Shutdown --> [*] : Destroy
+Failed --> [*] : Destroy
+
+
+@enduml

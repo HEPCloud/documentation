@@ -1,0 +1,34 @@
+@startuml
+skinparam shadowing false
+skinparam DefaultFontName helvetica
+skinparam DefaultFontSize 18
+skinparam ActivityBackgroundColor #82CE5A
+skinparam ActivityBorderColor green
+skinparam SequenceArrowColor blue
+
+start
+
+fork
+   :local
+   resources;
+fork again
+   :cloud
+   resources;
+fork again
+   :cloud
+   budget;
+fork again
+   :queued
+   jobs;
+end fork
+
+:**DECISION:**
+Shortlist resources based on following conditions
+    - User authorized to run jobs
+    - Have budget to run jobs in cloud
+    - Resource requirements for jobs;
+
+:**PUBLISH:** shortlisted resources;
+stop
+
+@enduml

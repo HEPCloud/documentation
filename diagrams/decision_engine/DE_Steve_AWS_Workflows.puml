@@ -1,0 +1,84 @@
+@startuml
+skinparam shadowing false
+
+start
+
+fork
+   :Source_provisioner_resources;
+fork again
+   :Source_budget;
+fork again
+   :Source_jobs;
+end fork
+
+:Decider_Resources;
+note right
+  * is user authorized to run
+  * has budget to run
+  * job manifest matches resource
+end note
+
+:Publisher_Resources;
+note right
+  * publishes list of resources
+end note
+
+stop
+
+start
+fork
+  :Source_Proxy_resource_list;
+fork again
+  :Source_price_performance;
+fork again
+  :Source_Monitoring;
+fork again
+  :Source_prices;
+fork again
+  :Source_resource_occupancy;
+end fork
+
+:Decider_resource_filter;
+note right
+  * Calculate figure of merit based on price-perf and occupancy
+end note
+
+:Publisher_resources_filtered;
+note right
+  * Resources sorted by figure of merit (local and remote)
+end note
+
+stop
+
+start
+fork
+  :Source_Proxy_resources_filtered;
+fork again
+  :Source_billing_info;
+fork again
+  :Source_local_cluster;
+fork again
+  :Source_monitoring_AWS;
+fork again
+  :Source_burn_rate;
+end fork
+
+:Decider_resource_request;
+note right
+  if ((local cluster not full) and
+      (current balance) and
+      (N * burn_rate > 0) and
+      (burn_rate < target)):
+     request cloud resources
+  else
+     request local resources
+end note
+
+:Publisher_resource_requests;
+note right
+  list of resources and how many of each resource
+end note
+
+stop
+
+@enduml

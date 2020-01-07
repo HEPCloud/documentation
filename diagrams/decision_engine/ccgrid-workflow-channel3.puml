@@ -1,0 +1,38 @@
+@startuml
+skinparam shadowing false
+skinparam DefaultFontName helvetica
+skinparam DefaultFontSize 18
+skinparam ActivityBackgroundColor #82CE5A
+skinparam ActivityBorderColor green
+skinparam SequenceArrowColor blue
+
+start
+fork
+  :filtered
+  resources;
+fork again
+  :cloud
+  billing;
+fork again
+  :resources
+  monitoring;
+fork again
+  :cloud
+  burn rate;
+end fork
+
+:**DECISION:**
+Generate resource requests for cloud and
+local resources
+    if ((cloud budget > 0) and
+        (N * burn rate > 0) and
+        (burn rate < target)):
+        request cloud resources
+    else:
+        request local resources
+;
+:**PUBLISH:**
+List of resources and how many of each type;
+stop
+
+@enduml

@@ -1,0 +1,96 @@
+
+@startuml
+skinparam shadowing false
+
+abstract class Source {
+ {abstract} void acquire()
+ {abstract} Strings produces()
+}
+
+abstract class Decider {
+ {abstract} bool run()
+ {abstract} Strings produces()
+ {abstract} Strings consumes()
+}
+
+abstract class Publisher {
+ {abstract} void publish()
+ {abstract} Strings consumes()
+}
+
+class TaskManager {
+
+}
+
+note left of TaskManager : Handles class of task
+
+
+TaskManager "1" *-- "*" Source : contains
+TaskManager "1" *-- "*" Decider : contains
+TaskManager "1" *-- "*" Publisher : contains
+
+class LogicExpr {
+}
+
+class Proxy {
+}
+
+Proxy o-- DataBlock
+
+Source <|-- Proxy
+Decider <|-- LogicExpr
+
+class Factory {
+ Source makeSource(String type, ParameterSet p)
+ Decider makeDecider(String type, ParameterSet p)
+ Publisher makePublisher(String type, ParameterSet p)
+}
+
+class Builder {
+ TaskManager make(DecisionDocument doc)
+}
+
+class Scheduler {
+}
+
+class Dict {
+ 
+}
+
+class DataBlock {
+ Dict get(String label)
+ void put(String label, Dict data)
+}
+
+DataBlock *-- Dict
+
+class DataSpace {
+}
+
+DataSpace "1" *-- "*" DataBlock : contains
+TaskManager "1" *-- "1" Scheduler : contains
+TaskManager "1" o-- "1" DataBlock : references
+
+class DecisionDocument {
+}
+
+class Config {
+}
+
+class BusinessRules {
+}
+
+DecisionDocument "1" *-- "1" Config : contains
+DecisionDocument "1" *-- "1" BusinessRules : contains
+
+Builder ..> DecisionDocument : uses
+Builder ..> Factory
+
+class Engine {
+}
+
+Engine "1" o-- "1" Builder : contains
+Engine "1" *-- "*" TaskManager : contains
+Engine "1" *-- "1" DataSpace : contains
+
+@enduml
